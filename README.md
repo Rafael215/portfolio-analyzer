@@ -81,3 +81,43 @@ These assumptions are appropriate for quick performance analysis but are not a f
 ## Motivation:
 
 This project was created to better understand how wealth management platforms evaluate portfolio performance, benchmark comparisons, and risk-adjusted returns in real-world financial contexts.
+
+---
+
+## Dashboard (Streamlit) + CLI Flags + Caching
+
+This project includes both:
+1) a **CLI tool** (engineer-friendly, scriptable), and  
+2) a **web dashboard** (demo-friendly, visually polished).
+
+The dashboard also supports a **CLI flags input box**, so you can paste flags like:
+
+```bash
+--file data/holdings.csv --benchmark SPY --period 2y --risk_free 0.02 --sort pl --top 5
+
+Streamlit Caching (Stability Feature)
+
+To reduce repeated calls to Yahoo Finance (yfinance) and improve reliability (especially when deployed), the dashboard caches analysis results for 15 minutes using Streamlit caching:
+	•	prevents rate-limit issues
+	•	speeds up refreshes and UI changes
+	•	improves stability for public users
+
+Run Locally
+
+1) Setup environment:
+python3 -m venv .venv
+source .venv/bin/activate
+
+2) Install dependencies:
+pip install -r requirements.txt
+
+3) Run the CLI
+Recommended way (package mode):
+python -m src.analyze --file data/holdings.csv --benchmark SPY --period 1y --risk_free 0.02
+Examples:
+python -m src.analyze --sort pl
+python -m src.analyze --top 5
+python -m src.analyze --benchmark SPY --period 2y --risk_free 0.02
+
+4) Run the Dashboard:
+streamlit run app.py
