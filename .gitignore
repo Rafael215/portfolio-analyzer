@@ -9,4 +9,4 @@ __pycache__/
 .DS_Store
 
 # Streamlit upload temp file (created when uploading CSV)
-.streamlit_holdings.csv
+.streamlit_holdings.csvoufff

@@ -33,7 +33,7 @@ def cached_analyze_portfolio(
 
 st.set_page_config(page_title="Portfolio Analyzer", layout="wide")
 
-st.title("📈 Portfolio Analyzer Dashboard")
+st.title(" Portfolio Analyzer Dashboard")
 st.caption("Upload a holdings CSV or point to a file path. You can also paste CLI flags.")
 
 # --- CLI flags input (engineers love this) ---
