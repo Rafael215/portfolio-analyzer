@@ -1,149 +1,138 @@
-Live Demo: https://portfolio-analyzer-rl.streamlit.app
+🔗 **Live Demo:** https://portfolio-analyzer-rl.streamlit.app
+# Portfolio Analyzer (CLI)
 
-PORTFOLIO ANALYZER
+A Python-based command-line tool for analyzing investment portfolios using live market data.  
+The tool computes portfolio allocation, unrealized profit/loss, benchmark performance, and risk-adjusted returns.
 
-Portfolio Analyzer is a Python-based portfolio analytics project that includes both a command-line interface (CLI) and a Streamlit web dashboard. It is designed to evaluate investment portfolios using live and historical market data, providing insight into allocation, performance, and risk-adjusted returns.
+This project was built to explore how financial advisors and portfolio managers evaluate performance relative to the market.
 
-The project supports both scriptable workflows for engineers and an interactive dashboard for demonstrations and exploration.
+---
 
-⸻
+## Features
 
-FEATURES
+- Ingests portfolio holdings from a CSV file
+- Pulls live and historical market prices using Yahoo Finance
+- Computes:
+  - Market value per holding
+  - Portfolio allocation percentages
+  - Cost basis and unrealized profit/loss
+- Compares portfolio performance against a market benchmark (e.g., S&P 500 via SPY or VOO)
+- Calculates **risk-adjusted performance** using the Sharpe ratio
+- Fully configurable via command-line flags
 
-• Ingests portfolio holdings from a CSV file
+---
 
-• Pulls live and historical market prices using Yahoo Finance
+## Tech Stack
 
-• Computes market value, allocation percentage, cost basis, and unrealized profit/loss per holding
+- Python
+- pandas
+- yfinance
+- argparse (CLI interface)
 
-• Compares portfolio performance against a configurable benchmark such as SPY or VOO
+---
 
-• Calculates risk-adjusted performance using the Sharpe ratio
+## Input Format
 
-• Fully configurable via command-line flags
+Holdings are provided via a CSV file with the following columns:
 
-• Includes a Streamlit dashboard with input validation and caching for stability
+ticker,shares,avg_cost
+AAPL,5,150
+MSFT,2,310
+VOO,1,410
 
-⸻
+Run the analyzer from the project root:
 
-TECH STACK
+	python src/analyze.py
 
+Common CLI Options:
 
-• Python
+	python src/analyze.py --sort pl
+	python src/analyze.py --top 3
+	python src/analyze.py --benchmark SPY --period 1y
+	python src/analyze.py --risk_free 0.02
 
-• pandas
+Available Flags:
 
-• yfinance
+•	--file : Path to holdings CSV
 
-• Streamlit
+•	--sort : Sort output by allocation, unrealized P/L, or ticker
 
-• argparse
+•	--top : Show only the top N holdings
 
-⸻
+•	--benchmark : Benchmark ticker (default: VOO)
 
-CSV INPUT FORMAT (REQUIRED)
+•	--period : Lookback period (e.g., 6mo, 1y, 2y)
 
-Holdings must be provided in a CSV file with the following columns:
+•	--risk_free : Annual risk-free rate (default: 0.0)
 
+Sample Output:
 
-• ticker — stock or ETF ticker symbol
+Portfolio return (1y): +11.77%
 
-• shares — number of shares held
+SPY return (1y): +17.38%
 
-• avg_cost — average cost per share
+Relative performance: -5.61%
 
-Example holdings file description:
+Portfolio Sharpe (1y): 0.55
 
-A CSV where each row represents a holding, including the ticker symbol, the number of shares owned, and the average purchase price per share.
+SPY Sharpe (1y): 0.82
 
-The Streamlit dashboard validates uploaded CSV files and will display a clear error message if the format is incorrect. (Should be able to truncate and remove unncesesary columns if needed) 
+ASSUMPTIONS AND LIMITATIONS:
 
-⸻
+•	Portfolio returns are calculated as a weighted average of individual holding returns using current allocation weights
 
-USING THE WEB DASHBOARD (NO LOCAL SETUP REQUIRED)
+•	Sharpe ratio is computed using daily returns and annualized
 
-The Portfolio Analyzer is also available as a live web application. No installation or command-line usage is required.
+•	This tool does not account for transaction timing, dividends, or taxes
 
-To use the web dashboard:
+These assumptions are appropriate for quick performance analysis but are not a full backtesting system.
 
-1.	Open the live site:
-https://portfolio-analyzer-rl.streamlit.app/
+---
 
-2.	Upload your own holdings CSV using the “Upload holdings CSV” option.
-Your file must include the columns: ticker, shares, and avg_cost.
+## Dashboard (Streamlit) + CLI Flags + Caching
 
-3.	In the CLI flags input box at the top of the page, remove the –file argument.
-When a CSV is uploaded, the dashboard automatically uses the uploaded file.
+This project includes both:
+1) a **CLI tool** (engineer-friendly, scriptable), and  
+2) a **web dashboard** (demo-friendly, visually polished).
 
-4.	Customize the remaining CLI flags to control the analysis. For example, you can change:
+The dashboard also supports a **CLI flags input box**, so you can paste flags like:
 
-• the benchmark (SPY, VOO, etc.)
+	benchmark SPY --period 2y --risk_free 0.02 --sort pl --top 5
 
-• the lookback period (6mo, 1y, 2y, 5y)
+Streamlit Caching (Stability Feature)
 
-• the risk-free rate
+To reduce repeated calls to Yahoo Finance (yfinance) and improve reliability (especially when deployed), the dashboard caches analysis results for 15 minutes using Streamlit caching:
+	•	prevents rate-limit issues
+	•	speeds up refreshes and UI changes
+	•	improves stability for public users
 
-• how results are sorted
+Run Locally
 
-• how many holdings are displayed
+1) Setup environment:
+   ```bash
+	python3 -m venv .venv
+	source .venv/bin/activate
 
-Example dashboard flag input (after uploading a CSV):
+2) Install dependencies:
+	```bash
+	pip install -r requirements.txt
 
-	–benchmark SPY –period 2y –risk_free 0.02 –sort pl –top 5
+3) Run the CLI
+Recommended way (package mode):
+	```bash
+	python -m src.analyze --file data/holdings.csv --benchmark SPY --period 1y --risk_free 0.02
+	Examples:
+	python -m src.analyze --sort pl
+	python -m src.analyze --top 5
+	python -m src.analyze --benchmark SPY --period 2y --risk_free 0.02
 
-⸻
+6) Run the Dashboard:
+	```bash
+	streamlit run app.py
 
-CLI USAGE
+---
 
-The CLI allows you to analyze portfolios directly from the terminal using configurable flags. You can control sorting, benchmark selection, lookback period, risk-free rate, and how many holdings are displayed.
+## Motivation:
 
-Available CLI options include:
+This project was created to better understand how wealth management platforms evaluate portfolio performance, benchmark comparisons, and risk-adjusted returns in real-world financial contexts.
 
-• File path to the holdings CSV
-
-• Sorting by allocation, unrealized profit/loss, or ticker
-
-• Limiting output to the top N holdings
-
-• Selecting a benchmark ticker
-
-• Choosing a performance lookback period
-
-• Specifying an annual risk-free rate
-
-The CLI outputs portfolio returns, benchmark returns, relative performance, and Sharpe ratios.
-
-⸻
-
-STREAMLIT DASHBOARD
-
-The Streamlit dashboard provides an interactive interface for portfolio analysis. Users can upload a CSV file or specify a local file path, adjust analysis parameters through sidebar controls, and view results in tables and charts.
-
-The dashboard also includes a CLI flags input box, allowing advanced users to paste the same flags used in the command-line tool.
-
-⸻
-
-CACHING AND STABILITY
-
-To reduce repeated calls to Yahoo Finance and improve reliability, the dashboard caches analysis results for approximately 15 minutes. This helps prevent rate-limit issues, speeds up UI refreshes, and improves stability for public deployments.
-
-⸻
-
-ASSUMPTIONS AND LIMITATIONS
-
-
-• Portfolio returns are calculated as a weighted average of individual holding returns using current allocation weights
-
-• Sharpe ratio is computed using daily returns and annualized
-
-• The tool does not account for transaction timing, dividends, taxes, or cash flows
-
-• This is not a full historical backtesting or rebalancing engine
-
-These assumptions make the tool suitable for quick performance analysis rather than precise portfolio simulation.
-
-⸻
-
-MOTIVATION
-
-This project was created to better understand how financial advisors and wealth management platforms evaluate portfolio allocation, benchmark-relative performance, and risk-adjusted returns in real-world financial contexts.
