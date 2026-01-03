@@ -42,15 +42,32 @@ Example holdings file description:
 
 A CSV where each row represents a holding, including the ticker symbol, the number of shares owned, and the average purchase price per share.
 
-The Streamlit dashboard validates uploaded CSV files and will display a clear error message if the format is incorrect.
+The Streamlit dashboard validates uploaded CSV files and will display a clear error message if the format is incorrect. (Should be able to truncate and remove unncesesary columns if needed) 
 
 ⸻
 
-RUNNING THE PROJECT LOCALLY
+USING THE WEB DASHBOARD (NO LOCAL SETUP REQUIRED)
 
-To run the project locally, first create and activate a Python virtual environment, then install the required dependencies from the requirements file.
+The Portfolio Analyzer is also available as a live web application. No installation or command-line usage is required.
 
-After setup, you may run either the CLI tool or the Streamlit dashboard.
+To use the web dashboard:
+	1.	Open the live site:
+https://portfolio-analyzer-rl.streamlit.app/
+	2.	Upload your own holdings CSV using the “Upload holdings CSV” option.
+Your file must include the columns: ticker, shares, and avg_cost.
+	3.	In the CLI flags input box at the top of the page, remove the –file argument.
+When a CSV is uploaded, the dashboard automatically uses the uploaded file.
+	4.	Customize the remaining CLI flags to control the analysis.
+For example, you can change:
+• the benchmark (SPY, VOO, etc.)
+• the lookback period (6mo, 1y, 2y, 5y)
+• the risk-free rate
+• how results are sorted
+• how many holdings are displayed
+
+Example dashboard flag input (after uploading a CSV):
+
+–benchmark SPY –period 2y –risk_free 0.02 –sort pl –top 5
 
 ⸻
 
